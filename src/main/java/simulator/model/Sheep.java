@@ -6,9 +6,9 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 public class Sheep extends Animal {
+
     private Animal dangerSource;
     private SelectionStrategy dangerStrategy;
-    private double dt;
 
     // Primera constructora
     public Sheep(SelectionStrategy mateStrategy, SelectionStrategy dangerStrategy, Vector2D pos) {
@@ -26,13 +26,32 @@ public class Sheep extends Animal {
 
     @Override
     public void update(double dt) {
-        // RegionManager rm = this.regionMngr.;
-        this.dt = dt;
         if (!this.state.equals(State.DEAD)) {
-            this.setState(this.state);
-            this.regionMngr.getfood(this, dt);
+            switch (this.state) {
+                case NORMAL:
+                    actionNormal(dt);
+                    break;
+                case MATE:
+                    actionMate(dt);
+                    break;
+                case DANGER:
+                    actionDanger(dt);
+                    break;
+                default:
+                    break;
+            }
+            int col = (int) Math.floor(getPosition().getX() / regionMngr.getRegionWidth());
+            int fila = (int) Math.floor(getPosition().getY() / regionMngr.getRegionHeight());
+            if (!regionMngr.intToMatrix(fila, col)) {
+                ajustarPos();
+                this.setNormalStateAction();
+            }
             if ((this.getEnergy() == 0.0) || (this.getAge() > 8.0)) {
-                this.state = State.DEAD;
+                this.setDeadStateAction();
+            }
+            if (!this.state.equals(State.DEAD)) {
+                double foot = this.regionMngr.getfood(this, dt);
+                energy = Utils.constrainValueInRange(energy + foot, 0.0, 100.0);
             }
         }
     }
@@ -44,24 +63,18 @@ public class Sheep extends Animal {
                 a -> a.getState() != State.DEAD && a.getDiet() == Diet.CARNIVORO);
     }
 
-    private List<Animal> getMateAnimals() {
-        return regionMngr.getAnimalsInRange(this,
-                a -> a.getState() != State.DEAD && a.getGeneticCode().equals(getGeneticCode()));
-    }
-
-    // Metodo que elige una posicion aleatoria cuando en el estado normal cuando la
-    // distancia entre pos y dest es menor a 8.
-    private void randomDestination() {
-        double x = Utils.RAND.nextDouble(regionMngr.getWidth() - 1);
-        double y = Utils.RAND.nextDouble(regionMngr.getHeight() - 1);
-        dest = new Vector2D(x, y);
-    }
-
     ////////////////////////////// NORMAL
+
+    public void actionNormal(double dt) {
+        advanceAnimalNormal(dt);
+        changeStateNormal();
+    }
+
     @Override
     protected void setNormalStateAction() {
-        advanceAnimalNormal();
-        changeStateNormal();
+        this.state = State.NORMAL;
+        this.dangerSource = null;
+        mateTarget = null;
     }
 
     private void changeStateNormal() {
@@ -69,12 +82,12 @@ public class Sheep extends Animal {
             this.dangerSource = this.dangerStrategy.select(this, getDangerousAnimals());
         }
         if (this.dangerSource != null) {
-            this.state = State.DANGER;
+            setDangerStateAction();
         } else if (this.desire > 65)
-            this.state = State.MATE;
+            setMateStateAction();
     }
 
-    private void advanceAnimalNormal() {
+    private void advanceAnimalNormal(double dt) {
         if (pos.distanceTo(dest) < 8)
             randomDestination();
         this.move(speed * dt * Math.exp((energy - 100.0) * 0.007));
@@ -85,8 +98,8 @@ public class Sheep extends Animal {
     }
 
     ////////////////////////////// MATE
-    @Override
-    protected void setMateStateAction() {
+
+    public void actionMate(double dt) {
         // Cuidado con este if
         if ((mateTarget != null && (mateTarget.getState().equals(State.DEAD))
                 || getPosition().distanceTo(mateTarget.getPosition()) >= this.getSightRange())) {
@@ -95,22 +108,28 @@ public class Sheep extends Animal {
         if (this.mateTarget == null) {
             mateTarget = mateStrategy.select(this, getMateAnimals());
             if (mateTarget == null)
-                advanceAnimalNormal();
+                advanceAnimalNormal(dt);
         } else {
-            advanceAnimalMate();
+            advanceAnimalMate(dt);
         }
         if (this.dangerSource == null) {
             this.dangerSource = this.dangerStrategy.select(this, getDangerousAnimals());
         }
         if (this.dangerSource != null) {
-            this.state = State.DANGER;
+            setDangerStateAction();
         } else if (this.dangerSource == null && desire < 65) {
-            this.state = State.NORMAL;
+            setNormalStateAction();
         }
 
     }
 
-    private void advanceAnimalMate() {
+    @Override
+    protected void setMateStateAction() {
+        this.state = State.MATE;
+        this.dangerSource = null;
+    }
+
+    private void advanceAnimalMate(double dt) {
         this.dest = mateTarget.getPosition();
         move(2.0 * speed * dt * Math.exp((this.energy - 100.0) * 0.007));
         age += dt;
@@ -131,17 +150,22 @@ public class Sheep extends Animal {
 
     ////////////////////////////// DANGER
 
-    @Override
-    protected void setDangerStateAction() {
+    public void actionDanger(double dt) {
         if (this.dangerSource != null && this.dangerSource.getState().equals(State.DEAD)) {
             this.dangerSource = null;
         }
         if (this.dangerSource == null) {
-            this.advanceAnimalNormal();
+            advanceAnimalNormal(dt);
         } else {
-            this.advanceAnimalDanger();
-            this.ChangeStateDanger();
+            advanceAnimalDanger(dt);
+            ChangeStateDanger();
         }
+    }
+
+    @Override
+    protected void setDangerStateAction() {
+        this.state = State.DANGER;
+        mateTarget = null;
     }
 
     // Metodo para hacer el paso tres para el estado DANGER.
@@ -154,14 +178,14 @@ public class Sheep extends Animal {
         }
         if (this.dangerSource == null) {
             if (this.desire < 65.0) {
-                this.state = State.NORMAL;
+                setNormalStateAction();
             } else {
-                this.state = State.MATE;
+                setMateStateAction();
             }
         }
     }
 
-    private void advanceAnimalDanger() {
+    private void advanceAnimalDanger(double dt) {
         double form = 2.0 * speed * dt * Math.exp((energy - 100.0) * 0.007);
         this.setDest(this.getPosition().plus(pos.minus(dangerSource.getPosition()).direction()));
         this.move(form);
@@ -175,5 +199,6 @@ public class Sheep extends Animal {
     ////////////////////////////////////////////////////////// DEAD
     @Override
     protected void setDeadStateAction() {
+        this.state = State.DEAD;
     }
 }

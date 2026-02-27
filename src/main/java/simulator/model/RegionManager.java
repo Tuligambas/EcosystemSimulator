@@ -157,11 +157,7 @@ public class RegionManager implements AnimalMapView {
     }
 
     public boolean intToMatrix(int row, int col) {
-        boolean correct = false;
-        if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
-            correct = true;
-        }
-        return correct;
+        return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
     }
 
     public Map<Animal, Region> getAnimalRegion() {
@@ -174,14 +170,6 @@ public class RegionManager implements AnimalMapView {
 
     public Region[][] getRegions() {
         return this.regions;
-    }
-
-    public int getCellWidth() {
-        return this.cellWidth;
-    }
-
-    public int getCellHeight() {
-        return this.cellHeight;
     }
 
     @Override

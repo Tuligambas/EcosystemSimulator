@@ -1,5 +1,7 @@
 package simulator.model;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -80,36 +82,39 @@ public abstract class Animal implements Entity, AnimalInfo {
     // @Override
     // public void update(double dt) {}
 
+    protected void ajustarPos() {
+        double x = pos.getX();
+        double y = pos.getY();
+        double width = regionMngr.getWidth();
+        double height = regionMngr.getHeight();
+
+        while (x >= width) {
+            x = x - width;
+        }
+        while (x < 0) {
+            x = x + width;
+        }
+        while (y >= height) {
+            y = y - height;
+        }
+        while (y < 0) {
+            y = y + height;
+        }
+
+        pos = new Vector2D(x, y);
+    }
+
     public void init(AnimalMapView regMngr) {
-        double x, y;
         this.setRegionMngr(regMngr);
         if (pos == null) {
             // NextDoubole genera numero aleatorio entre 0 y 1 y lo x por el limite que
             // indico en el parentesis.
-            x = Utils.RAND.nextDouble(regionMngr.getWidth() - 1); // Genero un numero aleatorio entre 0 y 1 y lo
-                                                                  // multiplica por ese limite para (x, y)
-            y = Utils.RAND.nextDouble(regionMngr.getHeight() - 1);
+            double x = Utils.RAND.nextDouble(regionMngr.getWidth() - 1); // Genero un numero aleatorio entre 0 y 1 y lo
+            // multiplica por ese limite para (x, y)
+            double y = Utils.RAND.nextDouble(regionMngr.getHeight() - 1);
             pos = new Vector2D(x, y); // Igualo mi posicion para que apunte a la nueva posicion creada.
         } else {
-            x = pos.getX();
-            y = pos.getY();
-            double width = regionMngr.getWidth();
-            double height = regionMngr.getHeight();
-
-            while (x >= width) {
-                x = x - width;
-            }
-            while (x < 0) {
-                x = x + width;
-            }
-            while (y >= height) {
-                y = y - height;
-            }
-            while (y < 0) {
-                y = y + height;
-            }
-
-            pos = new Vector2D(x, y);
+            ajustarPos();
         }
         // Genero la posocion aleatoria para la posicion destino.
         double xDest = Utils.RAND.nextDouble(regionMngr.getWidth() - 1); // Genero un numero aleatorio entre 0 y 1 y lo
@@ -159,6 +164,19 @@ public abstract class Animal implements Entity, AnimalInfo {
             default:
                 break;
         }
+    }
+
+    // Metodo que elige una posicion aleatoria cuando en el estado normal cuando la
+    // distancia entre pos y dest es menor a 8.
+    protected void randomDestination() {
+        double x = Utils.RAND.nextDouble(regionMngr.getWidth() - 1);
+        double y = Utils.RAND.nextDouble(regionMngr.getHeight() - 1);
+        dest = new Vector2D(x, y);
+    }
+
+    protected List<Animal> getMateAnimals() {
+        return regionMngr.getAnimalsInRange(this,
+                a -> a.getState() != State.DEAD && a.getGeneticCode().equals(getGeneticCode()));
     }
 
     @Override
