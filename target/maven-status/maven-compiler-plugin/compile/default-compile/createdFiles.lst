@@ -2,3 +2,6 @@ simulator/launcher/Main$ExecMode.class
 simulator/misc/Vector2D.class
 simulator/launcher/Main.class
 simulator/misc/Utils.class
+simulator/model/Wolf$1.class
+simulator/model/Animal$1.class
+simulator/model/Sheep$1.class
