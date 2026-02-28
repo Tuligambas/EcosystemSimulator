@@ -6,6 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo{
+
+    protected final static double FOOD_EAT_RATE_HERBS = 60.0;
+    protected final static double FOOD_SHORTAGE_TH_HERBS = 5.0;
+    protected final static double FOOD_SHORTAGE_EXP_HERBS = 2.0;
     // Atributos.
     protected List<Animal> AnimalsThisRegion;
 

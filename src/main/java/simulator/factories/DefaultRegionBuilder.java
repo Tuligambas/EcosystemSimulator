@@ -7,7 +7,7 @@ import simulator.model.Region;
 
 public class DefaultRegionBuilder extends Builder<Region> {
     public DefaultRegionBuilder() {
-        super("default", "Crea una region por defecto");
+        super("default", "Create a default region");
     }
 
     @Override

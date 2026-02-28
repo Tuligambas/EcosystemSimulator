@@ -10,6 +10,14 @@ import simulator.misc.Vector2D;
 
 public abstract class Animal implements Entity, AnimalInfo {
 
+    protected static final double INIT_ENERGY = 100.0;
+    protected static final double MUTATION_TOLERANCE = 0.2;
+    protected static final double NEARBY_FACTOR = 60.0;
+    protected static final double COLLISION_RANGE = 8.0; // Le he añadido el .0 para mantener el formato double
+    protected static final double HUNGER_DECAY_EXP_FACTOR = 0.007;
+    protected static final double MAX_ENERGY = 100.0;
+    protected static final double MAX_DESIRE = 100.0;
+
     // Atributos que usaran los tipos de animales que heredaran de esta clase Animal
     protected String geneticCode; // cadena de caracteres que sirve para saber si dos animales pden emparejarse
     protected Diet diet; // Es el enumerado de la clase dieta
@@ -38,7 +46,7 @@ public abstract class Animal implements Entity, AnimalInfo {
             this.mateStrategy = mateStrategy;
             this.pos = pos;
             this.state = State.NORMAL;
-            this.energy = 100.0;
+            this.energy = INIT_ENERGY;
             this.desire = 0.0;
             this.dest = null;
             this.mateTarget = null;
@@ -61,9 +69,9 @@ public abstract class Animal implements Entity, AnimalInfo {
         this.diet = p1.diet;
         this.mateStrategy = p2.mateStrategy;
         this.energy = (p1.energy + p2.energy) / 2;
-        this.pos = p1.getPosition().plus(Vector2D.getRandomVector(-1, 1).scale(60.0 * (Utils.RAND.nextGaussian() + 1)));
-        this.sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2, 0.2);
-        this.speed = Utils.getRandomizedParameter((p1.getSpeed() + p2.getSpeed()) / 2, 0.2);
+        this.pos = p1.getPosition().plus(Vector2D.getRandomVector(-1, 1).scale(NEARBY_FACTOR * (Utils.RAND.nextGaussian() + 1)));
+        this.sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2, MUTATION_TOLERANCE);
+        this.speed = Utils.getRandomizedParameter((p1.getSpeed() + p2.getSpeed()) / 2, MUTATION_TOLERANCE);
     }
 
     // Metodo que devuelve la estructura JSON.

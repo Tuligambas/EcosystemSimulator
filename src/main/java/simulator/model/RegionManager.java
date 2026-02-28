@@ -26,6 +26,10 @@ public class RegionManager implements AnimalMapView {
         this.animalRegion = new HashMap<Animal, Region>();
         this.regions = new DefaultRegion[rows][cols];
 
+        if (width % cols != 0 || height % rows != 0) {
+            throw new IllegalArgumentException("Ancho y alto deben ser divisibles por columnas y filas, respectivamente.");
+        }
+
         this.cellWidth = width / rows;
         this.cellWidth = height / cols;
 

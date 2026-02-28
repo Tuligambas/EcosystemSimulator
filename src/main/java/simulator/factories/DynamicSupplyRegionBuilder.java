@@ -7,13 +7,13 @@ import simulator.model.Region;
 
 public class DynamicSupplyRegionBuilder extends Builder<Region> {
     public DynamicSupplyRegionBuilder() {
-        super("dynamic", "Crea una región dinámica con comida variable");
+        super("dynamic", "Create a dinamic region with variable food");
     }
 
     @Override
     protected void fillInData(JSONObject o) {
-        o.put("food", "Cantidad inicial de comida (double)");
-        o.put("factor", "Variación de comida por segundo; >0 añade, <0 reduce (double)");
+        o.put("food", "Initial amount of food (double)");
+        o.put("factor", "Food variation per second; >0 adds, <0 reduces (double)");
     }
 
     @Override

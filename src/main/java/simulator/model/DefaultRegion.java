@@ -11,7 +11,7 @@ public class DefaultRegion extends Region {
             double food = 0.0;
             int n = super.busquedaHervivoros();
             if(!a.getDiet().equals(Diet.CARNIVORO)){
-                food = 60.0*Math.exp(-Math.max(0, n-5.0)*2.0)*dt;
+                food = FOOD_EAT_RATE_HERBS*Math.exp(-Math.max(0, n-FOOD_SHORTAGE_TH_HERBS)*FOOD_SHORTAGE_EXP_HERBS)*dt;
             }
              return food;
         }

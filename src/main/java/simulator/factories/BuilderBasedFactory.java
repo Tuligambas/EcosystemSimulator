@@ -9,7 +9,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 public class BuilderBasedFactory<T> implements Factory<T> {
-    private Map<String, Builder<T>> builders;
+    private Map<String, Builder<T>> builders; // Mapa de constructores
     private List<JSONObject> buildersInfo;
 
     public BuilderBasedFactory() {

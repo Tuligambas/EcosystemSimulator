@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import simulator.factories.Factory;
 
 public class Simulator implements JSONable {
-    // duroooo yo sigo leyendo las factorias
+    
     private double time;
     private final List<Animal> animals;
     private final RegionManager regionManager;
@@ -38,7 +38,7 @@ public class Simulator implements JSONable {
         this.regionManager.setRegion(row, col, r);
     }
 
-    private void setRegion(int row, int col, JSONObject rJson) {
+    public void setRegion(int row, int col, JSONObject rJson) {
         Region r = regionsFactory.createInstance(rJson);
         setRegion(row, col, r);
     }
@@ -49,7 +49,7 @@ public class Simulator implements JSONable {
         this.regionManager.registerAnimal(a);
     }
 
-    private void addAnimal(JSONObject aJson) {
+    public void addAnimal(JSONObject aJson) {
         Animal a = animalsFactory.createInstance(aJson);
         addAnimal(a);
     }
@@ -72,7 +72,7 @@ public class Simulator implements JSONable {
         // eliminar muertos
         for (int i = animals.size() - 1; i >= 0; i--) {
             Animal a = animals.get(i);
-            if (a.getState() == State.DEAD) {
+            if (a.getState().equals(State.DEAD)) {
                 regionManager.unregisterAnimal(a);
                 animals.remove(i);
             }
