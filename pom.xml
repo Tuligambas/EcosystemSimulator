@@ -71,11 +71,17 @@
         <configuration>
           <mainClass>simulator.launcher.Main</mainClass> <!-- para mvn exec:java -->
           <arguments>
-            <!-- mueve argumentos fuera del comentario para que se usen
-                <argument>arg1</argument>
-                <argument>arg2</argument>
-            -->
+            <argument>-i</argument>
+            <argument>src/main/resources/examples/ex1.json</argument>
+            <argument>-o</argument>
+            <argument>src/main/resources/tmp/out.json</argument>
+            <argument>-t</argument>
+            <argument>20.0</argument>
+            <argument>-dt</argument>
+            <argument>0.1</argument>
+            <argument>-sv</argument>
           </arguments>
+          <classpathScope>compile</classpathScope>
         </configuration>
       </plugin>
     </plugins>

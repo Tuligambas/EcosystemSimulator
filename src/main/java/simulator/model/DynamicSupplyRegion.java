@@ -23,7 +23,7 @@ public class DynamicSupplyRegion extends Region { // Representa una region que d
 
     @Override
     public double getfood(AnimalInfo a, double dt) {
-        if (!a.getDiet().equals(Diet.CARNIVORO) && !a.getDiet().equals(Diet.HERVIVORO)) {
+        if (!a.getDiet().equals(Diet.CARNIVORO) && !a.getDiet().equals(Diet.HERBIVORO)) {
             throw new IllegalArgumentException("El animal tiene una dieta no correcta o nula.");
         } else {
             double newFood = 0.0;

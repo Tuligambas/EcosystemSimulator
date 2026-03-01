@@ -117,36 +117,20 @@ public class Main {
 
   private static Options buildOptions() {
     Options cmdLineOptions = new Options();
-
-    // help
     cmdLineOptions.addOption(Option.builder("h").longOpt("help").desc("Print this message.").build());
-
-    // input file
     cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("A configuration file.").build());
-
-    // output file
     cmdLineOptions.addOption(
         Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
-
-    // delta-time
     cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
         .desc("A double representing actual time, in seconds, per simulation step. Default value: "
             + DEFAULT_DELTA_TIME + ".")
         .build());
-
-    // mode
     cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
         .desc("Execution mode: 'batch' or 'gui'. Default value: batch.").build());
-
-    // simple viewer
     cmdLineOptions.addOption(
         Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
-
-    // sr (reserved)
     cmdLineOptions
         .addOption(Option.builder("sr").hasArg().desc("Reserved option (not used in this version).").build());
-
-    // total time
     cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
         .desc("An real number representing the total simulation time in seconds. Default value: "
             + DEFAULT_TIME + ".")
@@ -173,9 +157,9 @@ public class Main {
   private static void parseTimeOption(CommandLine line) throws ParseException {
     String t = line.getOptionValue("t", DEFAULT_TIME.toString());
     try {
-      time = Double.parseDouble(t);
+      time = Double.valueOf(t);
       assert (time >= 0);
-    } catch (Exception e) {
+    } catch (NumberFormatException e) {
       throw new ParseException("Invalid value for time: " + t);
     }
   }
@@ -183,9 +167,9 @@ public class Main {
   private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
     String dt = line.getOptionValue("dt", DEFAULT_DELTA_TIME.toString());
     try {
-      deltaTime = Double.parseDouble(dt);
+      deltaTime = Double.valueOf(dt);
       assert (deltaTime >= 0);
-    } catch (Exception e) {
+    } catch (NumberFormatException e) {
       throw new ParseException("Invalid value for delta time: " + dt);
     }
   }

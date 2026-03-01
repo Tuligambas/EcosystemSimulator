@@ -74,7 +74,7 @@ public class Wolf extends Animal {
     ////////////////////////////// FUNCIONES AUXILIARES
     private List<Animal> getAnimalsToEat() {
         return regionMngr.getAnimalsInRange(this,
-                a -> a.getState() != State.DEAD && a.getDiet() == Diet.HERVIVORO);
+                a -> a.getState() != State.DEAD && a.getDiet() == Diet.HERBIVORO);
     }
 
     ////////////////////////////// NORMAL

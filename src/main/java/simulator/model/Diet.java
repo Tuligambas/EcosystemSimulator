@@ -1,13 +1,13 @@
 package simulator.model;
 
 public enum Diet {
-    HERVIVORO, CARNIVORO;
+    HERBIVORO, CARNIVORO;
 
-    public Diet conviertoAenum(String dieta){
+    public Diet conviertoAenum(String dieta) {
         Diet enumerado = null;
-        switch(dieta){
+        switch (dieta) {
             case "HERVIVORO":
-                enumerado = HERVIVORO;
+                enumerado = HERBIVORO;
                 break;
             case "CARNIVORO":
                 enumerado = CARNIVORO;
@@ -15,6 +15,6 @@ public enum Diet {
             default:
                 break;
         }
-        return enumerado;    
+        return enumerado;
     }
 }

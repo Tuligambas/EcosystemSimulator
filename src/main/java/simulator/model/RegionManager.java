@@ -30,7 +30,7 @@ public class RegionManager implements AnimalMapView {
 
         if (width % cols != 0 || height % rows != 0) {
             throw new IllegalArgumentException(
-                    "Ancho y alto deben ser divisibles por columnas y filas, respectivamente.");
+                    "Width and height must be divisible by columns and rows, respectively.");
         }
 
         // Cada celda tiene ancho = width/cols y alto = height/rows

@@ -69,8 +69,10 @@ public abstract class Animal implements Entity, AnimalInfo {
         this.diet = p1.diet;
         this.mateStrategy = p2.mateStrategy;
         this.energy = (p1.energy + p2.energy) / 2;
-        this.pos = p1.getPosition().plus(Vector2D.getRandomVector(-1, 1).scale(NEARBY_FACTOR * (Utils.RAND.nextGaussian() + 1)));
-        this.sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2, MUTATION_TOLERANCE);
+        this.pos = p1.getPosition()
+                .plus(Vector2D.getRandomVector(-1, 1).scale(NEARBY_FACTOR * (Utils.RAND.nextGaussian() + 1)));
+        this.sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2,
+                MUTATION_TOLERANCE);
         this.speed = Utils.getRandomizedParameter((p1.getSpeed() + p2.getSpeed()) / 2, MUTATION_TOLERANCE);
     }
 

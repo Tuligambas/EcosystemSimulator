@@ -13,7 +13,8 @@
       "name": "Main (batch)",
       "request": "launch",
       "mainClass": "simulator.launcher.Main",
-      "args": "-i src/main/resources/examples/ex1.json -o /tmp/out.json -t 30 -dt 0.03 -sv",
+      "args": "-i src/main/resources/examples/ex1.json -o src/main/resources/tmp/out.json -t 10 -dt 0.1 -sv ",
+      "projectName": "EcosystemSimulator",
       "cwd": "${workspaceFolder}"
     }
   ]
