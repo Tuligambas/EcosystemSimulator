@@ -55,14 +55,14 @@ public class Sheep extends Animal {
             int fila = (int) Math.floor(getPosition().getY() / regionMngr.getRegionHeight());
             if (!regionMngr.intToMatrix(fila, col)) {
                 ajustarPos();
-                this.setNormalStateAction();
+                this.setState(State.DEAD);
             }
             if ((this.getEnergy() == 0.0) || (this.getAge() > MAX_AGE_SHEEP)) {
                 this.setDeadStateAction();
             }
             if (!this.state.equals(State.DEAD)) {
                 double foot = this.regionMngr.getfood(this, dt);
-                energy = Utils.constrainValueInRange(energy + foot, 0.0, MAX_ENERGY );
+                energy = Utils.constrainValueInRange(energy + foot, 0.0, MAX_ENERGY);
             }
         }
     }
@@ -99,21 +99,21 @@ public class Sheep extends Animal {
     }
 
     private void advanceAnimalNormal(double dt) {
-        if (pos.distanceTo(dest) < COLLISION_RANGE )
+        if (pos.distanceTo(dest) < COLLISION_RANGE)
             randomDestination();
-        this.move(speed * dt * Math.exp((energy - 100.0) * HUNGER_DECAY_EXP_FACTOR ));
+        this.move(speed * dt * Math.exp((energy - 100.0) * HUNGER_DECAY_EXP_FACTOR));
         age += dt;
-        energy = Utils.constrainValueInRange(energy - FOOD_DROP_RATE_SHEEP * dt, 0.0, MAX_ENERGY );
-        desire = Utils.constrainValueInRange(desire + DESIRE_INCREASE_RATE_SHEEP  * dt, 0.0, MAX_DESIRE );
+        energy = Utils.constrainValueInRange(energy - FOOD_DROP_RATE_SHEEP * dt, 0.0, MAX_ENERGY);
+        desire = Utils.constrainValueInRange(desire + DESIRE_INCREASE_RATE_SHEEP * dt, 0.0, MAX_DESIRE);
 
     }
 
     ////////////////////////////// MATE
 
     public void actionMate(double dt) {
-        // Cuidado con este if
-        if ((mateTarget != null && (mateTarget.getState().equals(State.DEAD))
-                || getPosition().distanceTo(mateTarget.getPosition()) >= this.getSightRange())) {
+        if (mateTarget != null
+                && (mateTarget.getState().equals(State.DEAD)
+                        || getPosition().distanceTo(mateTarget.getPosition()) >= this.getSightRange())) {
             mateTarget = null;
         }
         if (this.mateTarget == null) {
@@ -144,7 +144,7 @@ public class Sheep extends Animal {
         this.dest = mateTarget.getPosition();
         move(BOOST_FACTOR_SHEEP * speed * dt * Math.exp((this.energy - 100.0) * HUNGER_DECAY_EXP_FACTOR));
         age += dt;
-        energy -= FOOD_DROP_RATE_SHEEP  * FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
+        energy -= FOOD_DROP_RATE_SHEEP * FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
         if (this.getPosition().distanceTo(mateTarget.getPosition()) < COLLISION_RANGE) {
             this.setDesire(0.0);
             mateTarget.setDesire(0);
@@ -197,11 +197,12 @@ public class Sheep extends Animal {
     }
 
     private void advanceAnimalDanger(double dt) {
-        double form = BOOST_FACTOR_SHEEP * speed * dt * Math.exp((energy - 100.0) * HUNGER_DECAY_EXP_FACTOR );
+        double form = BOOST_FACTOR_SHEEP * speed * dt * Math.exp((energy - 100.0) * HUNGER_DECAY_EXP_FACTOR);
         this.setDest(this.getPosition().plus(pos.minus(dangerSource.getPosition()).direction()));
         this.move(form);
         this.age += dt;
-        energy = Utils.constrainValueInRange(energy - FOOD_DROP_RATE_SHEEP * FOOD_DROP_BOOST_FACTOR_SHEEP * dt, 0.0, MAX_ENERGY);
+        energy = Utils.constrainValueInRange(energy - FOOD_DROP_RATE_SHEEP * FOOD_DROP_BOOST_FACTOR_SHEEP * dt, 0.0,
+                MAX_ENERGY);
         desire = Utils.constrainValueInRange(desire + 40.0 * dt, 0.0, MAX_DESIRE);
     }
 

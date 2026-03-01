@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "simulator.launcher.Main",
+      "projectName": "ecosystem-simulator"
+    },
+    {
+      "type": "java",
+      "name": "Main (batch)",
+      "request": "launch",
+      "mainClass": "simulator.launcher.Main",
+      "args": "-i src/main/resources/examples/ex1.json -o /tmp/out.json -t 30 -dt 0.03 -sv",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

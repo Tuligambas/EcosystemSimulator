@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,14 +25,17 @@ public class RegionManager implements AnimalMapView {
         this.width = width;
         this.height = height;
         this.animalRegion = new HashMap<Animal, Region>();
-        this.regions = new DefaultRegion[rows][cols];
+        // Use Region[][] so we can store any Region subtype (e.g., DynamicSupplyRegion)
+        this.regions = new Region[rows][cols];
 
         if (width % cols != 0 || height % rows != 0) {
-            throw new IllegalArgumentException("Ancho y alto deben ser divisibles por columnas y filas, respectivamente.");
+            throw new IllegalArgumentException(
+                    "Ancho y alto deben ser divisibles por columnas y filas, respectivamente.");
         }
 
-        this.cellWidth = width / rows;
-        this.cellWidth = height / cols;
+        // Cada celda tiene ancho = width/cols y alto = height/rows
+        this.cellWidth = width / cols;
+        this.cellHeight = height / rows;
 
         // Inicializo la matriz para que los valores de dentro de la matriz para que
         // estos no sean nulos.
@@ -92,6 +96,9 @@ public class RegionManager implements AnimalMapView {
     @Override
     public double getfood(AnimalInfo a, double dt) {
         Region r = this.animalRegion.get(a);
+        if (r == null) {
+            return 0.0; // el animal aún no está registrado en ninguna región
+        }
         return r.getfood(a, dt);
     }
 
@@ -106,6 +113,9 @@ public class RegionManager implements AnimalMapView {
     }
 
     public void registerAnimal(Animal a) {
+        // Aseguramos que el animal tiene posición inicial y destino coherentes.
+        a.init(this);
+
         // En primer lugar tengo que transcribir las coordenadas del animal a (fila,
         // columna).
         int col = (int) Math.floor(a.getPosition().getX() / this.cellWidth);
@@ -119,7 +129,6 @@ public class RegionManager implements AnimalMapView {
             if (r != null) {
                 r.addAnimal(a);
                 this.animalRegion.put(a, r);
-                a.init(this);
             }
         }
     }
