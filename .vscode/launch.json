@@ -13,7 +13,11 @@
       "name": "Main (batch)",
       "request": "launch",
       "mainClass": "simulator.launcher.Main",
-      "args": "-i src/main/resources/examples/ex1.json -o src/main/resources/tmp/out.json -t 10 -dt 0.1 -sv ",
+      "args": "-i src/main/resources/examples/ex1.json -o src/main/resources/tmp/out1.json -t 10 -dt 0.1 -sv ",
+      //"args": "-i src/main/resources/examples/ex2.json -o src/main/resources/tmp/out2.json -t 10 -dt 0.1 -sv ",
+      //"args": "-i src/main/resources/examples/ex3.json -o src/main/resources/tmp/out3.json -t 10 -dt 0.1 -sv ",
+      //"args": "-i src/main/resources/examples/ex4.json -o src/main/resources/tmp/out4.json -t 10 -dt 0.1 -sv ",
+      //"args": "-i src/main/resources/examples/ex5.json -o src/main/resources/tmp/out5.json -t 10 -dt 0.1 -sv ",
       "projectName": "EcosystemSimulator",
       "cwd": "${workspaceFolder}"
     }

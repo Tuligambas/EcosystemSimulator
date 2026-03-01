@@ -78,12 +78,6 @@ public class Wolf extends Animal {
     }
 
     ////////////////////////////// NORMAL
-    @Override
-    protected void setNormalStateAction() {
-        huntTarget = mateTarget = null;
-        this.state = State.NORMAL;
-    }
-
     private void actionNormal(double dt) {
         advanceAnimalNormal(dt);
         changeStateNormal();
@@ -105,31 +99,32 @@ public class Wolf extends Animal {
             setState(State.MATE);
     }
 
+    @Override
+    protected void setNormalStateAction() {
+        huntTarget = mateTarget = null;
+        this.state = State.NORMAL;
+    }
+
     ////////////////////////////// MATE
     private void actionMate(double dt) {
         if (mateTarget != null && (mateTarget.getState() == State.DEAD ||
                 getPosition().distanceTo(mateTarget.getPosition()) >= getSightRange())) {
             mateTarget = null;
         }
-
-        if (mateTarget == null) {
+        // si no tiene pareja, busca una
+        if (mateTarget == null)
             mateTarget = mateStrategy.select(this, getMateAnimals());
-            if (mateTarget == null)
-                advanceAnimalNormal(dt);
-            else {
-                advanceAnimalMate(dt);
-            }
-        }
+
+        // y si no la encuentra
+        if (mateTarget == null)
+            advanceAnimalNormal(dt);
+        else
+            advanceAnimalMate(dt);
+
         if (energy < FOOD_THRSHOLD_WOLF)
             setState(State.HUNGER);
         else if (desire < DESIRE_THRESHOLD_WOLF)
             setState(State.NORMAL);
-    }
-
-    @Override
-    protected void setMateStateAction() {
-        huntTarget = null;
-        state = State.MATE;
     }
 
     private void advanceAnimalMate(double dt) {
@@ -151,6 +146,12 @@ public class Wolf extends Animal {
         }
     }
 
+    @Override
+    protected void setMateStateAction() {
+        huntTarget = null;
+        state = State.MATE;
+    }
+
     ////////////////////////////// HUNGER
     private void actionHunger(double dt) {
         if (huntTarget == null
@@ -167,12 +168,6 @@ public class Wolf extends Animal {
         changeStateHunger();
     }
 
-    @Override
-    protected void setHungerStateAction() {
-        mateTarget = null;
-        this.state = State.HUNGER;
-    }
-
     private void advanceAnimalHunger(double dt) {
         dest = huntTarget.getPosition();
         move(BOOST_FACTOR_WOLF * speed * dt * Math.exp((energy - 100.0) * HUNGER_DECAY_EXP_FACTOR));
@@ -186,12 +181,6 @@ public class Wolf extends Animal {
         }
     }
 
-    private void hunt() {
-        huntTarget.setState(State.DEAD);
-        huntTarget = null;
-        energy = Utils.constrainValueInRange(energy + FOOD_EAT_VALUE_WOLF, 0.0, MAX_ENERGY);
-    }
-
     private void changeStateHunger() {
         if (energy > FOOD_THRSHOLD_WOLF) {
             if (desire < DESIRE_THRESHOLD_WOLF)
@@ -199,6 +188,18 @@ public class Wolf extends Animal {
             else
                 setState(State.MATE);
         }
+    }
+
+    private void hunt() {
+        huntTarget.setState(State.DEAD);
+        huntTarget = null;
+        energy = Utils.constrainValueInRange(energy + FOOD_EAT_VALUE_WOLF, 0.0, MAX_ENERGY);
+    }
+
+    @Override
+    protected void setHungerStateAction() {
+        mateTarget = null;
+        this.state = State.HUNGER;
     }
 
     ////////////////////////////// DANGER
