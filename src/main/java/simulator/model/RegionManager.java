@@ -2,6 +2,7 @@ package simulator.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -79,7 +80,7 @@ public class RegionManager implements AnimalMapView {
         for (int i = filaMin; i <= filaMax; i++) { // aqui consulto las regiones del campo visual de Animal e
             for (int j = colMin; j <= colMax; j++) {
                 if (this.intToMatrix(i, j)) {
-                    for (Animal a : this.getRegion(i, j).getAnimals()) {
+                    for (Animal a : this.regions[i][j].getAnimals()) {
                         if (a != e && e.getPosition().distanceTo(a.getPosition()) <= e.getSightRange()
                                 && filter.test(a)) {
                             visualRange.add(a);
@@ -177,10 +178,6 @@ public class RegionManager implements AnimalMapView {
         return this.animalRegion;
     }
 
-    public Region getRegion(int fila, int col) {
-        return this.regions[fila][col];
-    }
-
     public Region[][] getRegions() {
         return this.regions;
     }
@@ -213,5 +210,17 @@ public class RegionManager implements AnimalMapView {
     @Override
     public int getRegionHeight() {
         return this.cellHeight;
+    }
+
+    // revisar
+    @Override
+    public Iterator<RegionData> iterator() {
+        List<RegionData> data = new ArrayList<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                data.add(new RegionData(i, j, regions[i][j]));
+            }
+        }
+        return data.iterator();
     }
 }

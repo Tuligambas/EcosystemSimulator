@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import simulator.model.AnimalInfo;
+import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.Simulator;
 import simulator.view.SimpleObjectViewer;
@@ -48,6 +49,7 @@ public class Controller {
                 }
             }
         }
+
         if (data.has("animals")) { // Procesa los JSON de los animales
             JSONArray animals = data.getJSONArray("animals");
             for (int t = 0; t < animals.length(); t++) {
@@ -91,5 +93,38 @@ public class Controller {
 
         if (sv)
             view.close();
+    }
+
+    public void reset(int cols, int rows, int width, int height) {
+        this.sim.reset(cols, rows, width, height);
+    }
+
+    public void setRegions(JSONObject rs) {
+        if (rs.has("regions")) { // Procesa los JSON de la regiones
+            JSONArray arrayRegions = rs.getJSONArray("regions");
+            for (int k = 0; k < arrayRegions.length(); k++) {
+                JSONObject objRegion = arrayRegions.getJSONObject(k);
+                JSONArray rows = objRegion.getJSONArray("row");
+                JSONArray cols = objRegion.getJSONArray("col");
+                JSONObject regDescrip = objRegion.getJSONObject("spec");
+                for (int i = rows.getInt(0); i <= rows.getInt(1); i++) {
+                    for (int j = cols.getInt(0); j <= cols.getInt(1); j++) {
+                        sim.setRegion(i, j, regDescrip);
+                    }
+                }
+            }
+        }
+    }
+
+    public void advance(double dt) {
+        this.sim.advance(dt);
+    }
+
+    public void addObserver(EcoSysObserver o) {
+        this.sim.addObserver(o);
+    }
+
+    public void removeObserver(EcoSysObserver o) {
+        this.sim.removeObserver(o);
     }
 }

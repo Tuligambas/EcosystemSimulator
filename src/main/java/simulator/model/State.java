@@ -3,22 +3,22 @@ package simulator.model;
 public enum State {
     NORMAL, MATE, HUNGER, DANGER, DEAD;
 
-    public State StringToEnum(String estado){
+    public State StringToEnum(String estado) {
         State state = null;
-        switch(estado){
-            case "NORMAL" :
+        switch (estado) {
+            case "NORMAL":
                 state = NORMAL;
                 break;
-            case "MATE" :
+            case "MATE":
                 state = MATE;
                 break;
-            case "HUNGER" :
+            case "HUNGER":
                 state = HUNGER;
                 break;
-            case "DANGER" :
+            case "DANGER":
                 state = DANGER;
                 break;
-            case "DEAD" : 
+            case "DEAD":
                 state = DEAD;
                 break;
             default:

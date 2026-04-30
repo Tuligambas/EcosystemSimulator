@@ -7,11 +7,16 @@ import simulator.model.Region;
 
 public class DefaultRegionBuilder extends Builder<Region> {
     public DefaultRegionBuilder() {
-        super("default", "Create a default region");
+        super("default", "Infinite food supply");
     }
 
     @Override
     protected Region createInstance(JSONObject data) {
         return new DefaultRegion();
+    }
+
+    @Override
+    protected void fillInData(JSONObject o) {
+        // no tiene data
     }
 }

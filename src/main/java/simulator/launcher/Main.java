@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -34,6 +36,7 @@ import simulator.model.Animal;
 import simulator.model.Region;
 import simulator.model.SelectionStrategy;
 import simulator.model.Simulator;
+import simulator.view.MainWindow;
 
 public class Main {
 
@@ -66,8 +69,8 @@ public class Main {
   //
   private static Double time = null;
   private static String inFile = null;
-  private static ExecMode mode = ExecMode.BATCH;
-  private static Double deltaTime = DEFAULT_DELTA_TIME;
+  private static ExecMode mode = ExecMode.GUI;
+  public static Double deltaTime = DEFAULT_DELTA_TIME;
   private static String outFile = null;
   private static boolean simpleViewer = false;
   private static String srFile = null;
@@ -126,7 +129,9 @@ public class Main {
             + DEFAULT_DELTA_TIME + ".")
         .build());
     cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
-        .desc("Execution mode: 'batch' or 'gui'. Default value: batch.").build());
+        .desc(
+            "Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'gui'.")
+        .build());
     cmdLineOptions.addOption(
         Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
     cmdLineOptions
@@ -183,7 +188,7 @@ public class Main {
   }
 
   private static void parseModeOption(CommandLine line) throws ParseException {
-    String m = line.getOptionValue("m", ExecMode.BATCH.getTag());
+    String m = line.getOptionValue("m", ExecMode.GUI.getTag());
     for (ExecMode em : ExecMode.values()) {
       if (em.getTag().equalsIgnoreCase(m)) {
         mode = em;
@@ -191,6 +196,10 @@ public class Main {
       }
     }
     throw new ParseException("Invalid mode: " + m);
+  }
+
+  public static Factory<Region> getRegionsFactory() {
+    return regionsFactory;
   }
 
   private static void parseSROption(CommandLine line) {
@@ -254,7 +263,24 @@ public class Main {
   }
 
   private static void start_GUI_mode() throws Exception {
-    throw new UnsupportedOperationException("GUI mode is not ready yet ...");
+    Simulator sim;
+    if (inFile != null) {
+      try (InputStream is = new FileInputStream(new File(inFile))) {
+        JSONObject input = loadJSONFile(is);
+        int width = input.getInt("width");
+        int height = input.getInt("height");
+        int rows = input.getInt("rows");
+        int cols = input.getInt("cols");
+        sim = new Simulator(cols, rows, width, height, animalsFactory, regionsFactory);
+        Controller ctrl = new Controller(sim);
+        ctrl.loadData(input);
+        SwingUtilities.invokeAndWait(() -> new MainWindow(ctrl));
+      }
+    } else {
+      sim = new Simulator(20, 15, 800, 600, animalsFactory, regionsFactory);
+      Controller ctrl = new Controller(sim);
+      SwingUtilities.invokeAndWait(() -> new MainWindow(ctrl));
+    }
   }
 
   private static void start(String[] args) throws Exception {

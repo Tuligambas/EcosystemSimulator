@@ -60,4 +60,9 @@ public class DynamicSupplyRegion extends Region { // Representa una region que d
     public void setIncreaseDecrease(double factor) {
         this.factor = factor;
     }
+
+    @Override
+    public String toString(){
+        return "DinamicSupplyRegion";
+    }
 }
